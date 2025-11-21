@@ -1,0 +1,51 @@
+name: 'Wary Notify'
+description: 'Send notifications about test failures'
+
+inputs:
+  upstream-package:
+    description: 'Upstream package name'
+    required: true
+  upstream-version:
+    description: 'Upstream version'
+    required: true
+  notification-method:
+    description: 'Notification method: github-issue, webhook, slack'
+    required: false
+    default: 'github-issue'
+  github-token:
+    description: 'GitHub token for creating issues'
+    required: false
+  webhook-url:
+    description: 'Webhook URL for notifications'
+    required: false
+  slack-webhook:
+    description: 'Slack webhook URL'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install wary
+      shell: bash
+      run: pip install wary requests
+
+    - name: Send notifications
+      shell: bash
+      env:
+        UPSTREAM: ${{ inputs.upstream-package }}
+        VERSION: ${{ inputs.upstream-version }}
+        METHOD: ${{ inputs.notification-method }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        WEBHOOK_URL: ${{ inputs.webhook-url }}
+        SLACK_WEBHOOK: ${{ inputs.slack-webhook }}
+      run: |
+        python ${{ github.action_path }}/notify.py
+
+branding:
+  icon: 'bell'
+  color: 'orange'

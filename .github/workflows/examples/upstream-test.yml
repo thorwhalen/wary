@@ -1,0 +1,38 @@
+# Example workflow for upstream packages
+# Use this in packages that OTHER packages depend on
+
+name: Test Dependents
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to test'
+        required: true
+
+jobs:
+  test-dependents:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Test all dependents
+        uses: thorwhalen/wary/.github/actions/wary-test@main
+        with:
+          package-name: 'dol'
+          package-version: ${{ github.event.release.tag_name || github.event.inputs.version }}
+          max-parallel: 3
+          # Optional: Use shared wary service
+          # wary-api-url: 'https://wary.example.com'
+          # wary-api-key: ${{ secrets.WARY_API_KEY }}
+
+      - name: Notify on failures
+        if: failure()
+        uses: thorwhalen/wary/.github/actions/wary-notify@main
+        with:
+          upstream-package: 'dol'
+          upstream-version: ${{ github.event.release.tag_name || github.event.inputs.version }}
+          notification-method: 'github-issue'
+          github-token: ${{ secrets.GITHUB_TOKEN }}

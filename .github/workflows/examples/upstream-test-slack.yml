@@ -1,0 +1,29 @@
+# Example workflow with Slack notifications
+
+name: Test Dependents with Slack
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  test-dependents:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Test all dependents
+        id: test
+        uses: thorwhalen/wary/.github/actions/wary-test@main
+        with:
+          package-name: 'my-package'
+          package-version: ${{ github.event.release.tag_name }}
+
+      - name: Notify Slack on failures
+        if: failure()
+        uses: thorwhalen/wary/.github/actions/wary-notify@main
+        with:
+          upstream-package: 'my-package'
+          upstream-version: ${{ github.event.release.tag_name }}
+          notification-method: 'slack'
+          slack-webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
