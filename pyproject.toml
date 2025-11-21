@@ -14,7 +14,15 @@ keywords = []
 authors = [
     { name = "Thor Whalen" },
 ]
-dependencies = []
+dependencies = [
+    "dol>=0.2.51",        # Data access patterns
+    "i2>=0.1.30",         # Utilities
+    "requests>=2.31.0",   # HTTP requests
+    "pyyaml>=6.0",        # Config files
+    "click>=8.1.0",       # CLI
+    "packaging>=23.0",    # Version parsing
+    "appdirs>=1.4.4",     # Standard directories
+]
 
 [project.license]
 text = "mit"
@@ -33,6 +41,12 @@ dev = [
 docs = [
     "sphinx>=6.0",
     "sphinx-rtd-theme>=1.0",
+]
+api = [
+    "qh>=0.0.12",         # HTTP interfaces (for Phase 3)
+]
+ui = [
+    "uf",                 # UI framework (for Phase 3)
 ]
 
 [tool.ruff]
@@ -143,3 +157,6 @@ ignore_paths = [
     "scrap/",
     "examples/",
 ]
+
+[project.scripts]
+wary = "wary.cli:cli"
