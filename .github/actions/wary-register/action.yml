@@ -1,0 +1,45 @@
+name: 'Wary Register Dependent'
+description: 'Register this package as a dependent of upstream packages'
+
+inputs:
+  upstream-packages:
+    description: 'Comma-separated list of upstream packages'
+    required: true
+  test-command:
+    description: 'Command to run tests'
+    required: false
+    default: 'pytest'
+  wary-api-url:
+    description: 'Wary API URL (for shared service)'
+    required: false
+  wary-api-key:
+    description: 'API key for wary service'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install wary
+      shell: bash
+      run: pip install wary
+
+    - name: Register dependents
+      shell: bash
+      env:
+        UPSTREAM: ${{ inputs.upstream-packages }}
+        TEST_CMD: ${{ inputs.test-command }}
+        API_URL: ${{ inputs.wary-api-url }}
+        API_KEY: ${{ inputs.wary-api-key }}
+        REPO_NAME: ${{ github.repository }}
+        REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+      run: |
+        python ${{ github.action_path }}/register.py
+
+branding:
+  icon: 'link'
+  color: 'blue'

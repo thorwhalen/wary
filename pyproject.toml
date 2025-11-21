@@ -43,10 +43,23 @@ docs = [
     "sphinx-rtd-theme>=1.0",
 ]
 api = [
-    "qh>=0.0.12",         # HTTP interfaces (for Phase 3)
+    "flask>=2.3.0",       # Web framework for API
+    "werkzeug>=2.3.0",    # WSGI utilities
 ]
 ui = [
-    "uf",                 # UI framework (for Phase 3)
+    "flask>=2.3.0",       # Web framework for UI
+]
+server = [
+    "flask>=2.3.0",
+    "werkzeug>=2.3.0",
+    "gunicorn>=21.0.0",   # Production WSGI server
+    "psycopg2-binary>=2.9.0",  # PostgreSQL adapter
+]
+all = [
+    "flask>=2.3.0",
+    "werkzeug>=2.3.0",
+    "gunicorn>=21.0.0",
+    "psycopg2-binary>=2.9.0",
 ]
 
 [tool.ruff]

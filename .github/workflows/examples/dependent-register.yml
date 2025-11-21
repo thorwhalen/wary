@@ -1,0 +1,24 @@
+# Example workflow for dependent packages
+# Use this in packages that DEPEND on upstream packages
+
+name: Register as Dependent
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Register with wary
+        uses: thorwhalen/wary/.github/actions/wary-register@main
+        with:
+          upstream-packages: 'dol,i2,qh'
+          test-command: 'pytest tests/'
+          # Optional: Use shared wary service
+          # wary-api-url: 'https://wary.example.com'
+          # wary-api-key: ${{ secrets.WARY_API_KEY }}

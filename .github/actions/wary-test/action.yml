@@ -1,0 +1,49 @@
+name: 'Wary Test Dependents'
+description: 'Test registered dependents after package release'
+
+inputs:
+  package-name:
+    description: 'Package name (auto-detected from repo if not provided)'
+    required: false
+  package-version:
+    description: 'Package version to test (auto-detected from tag if not provided)'
+    required: false
+  wary-api-url:
+    description: 'Wary API URL (for shared service)'
+    required: false
+  wary-api-key:
+    description: 'API key for wary service'
+    required: false
+  max-parallel:
+    description: 'Maximum number of parallel tests'
+    required: false
+    default: '3'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install wary
+      shell: bash
+      run: pip install wary
+
+    - name: Test dependents
+      shell: bash
+      env:
+        PKG_NAME: ${{ inputs.package-name }}
+        PKG_VERSION: ${{ inputs.package-version }}
+        API_URL: ${{ inputs.wary-api-url }}
+        API_KEY: ${{ inputs.wary-api-key }}
+        MAX_PARALLEL: ${{ inputs.max-parallel }}
+        GITHUB_REF: ${{ github.ref }}
+        GITHUB_REPO: ${{ github.repository }}
+      run: |
+        python ${{ github.action_path }}/test.py
+
+branding:
+  icon: 'check-circle'
+  color: 'green'
